@@ -1,0 +1,21 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src/js --out-dir dist/src/js --watch",
+    "server" : "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.13",
+    "@babel/preset-env": "^7.13.12"
+  },
+  "dependencies": {
+    "core-js": "^3.9.1"
+  }
+}
