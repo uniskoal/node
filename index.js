@@ -8,47 +8,53 @@ http.createServer(function(request,response) {
     fs.readFile(`page/document/${(request.url === '/') ? "WELCOME" : (params.get('sub') === null) ? "NOTFOUND" : params.get('sub')}` , 'utf8' , (err,data) => {
         
         if(err) throw err;
-        
-        let template = `
-        <!doctype html>
-        <html>
-            <head>
-                <link rel="shortcut icon" href="#">
-                <meta charset="utf-8">
-                <meta name="description" content="김준서의 개인 자기개발 사이트">
-                <meta name="keywords" content="html,css,javascript,node.js">
-                <title>김준서</title>
-            </head>
-            <body>
-                <table border="1" cellspacing="0">
-                    <tr>
-                        <th>1</th>
-                        <td><a href="/">WELCOME</a></td>
-                    </tr>
-                    <tr>
-                        <th>1</th>
-                        <td><a href="/?sub=HTML">HTML</a></td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td><a href="/?sub=CSS">CSS</a></td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td><a href="/?sub=JAVASCRIPT">JAVASCRIPT</a></td>
-                    </tr>
-                </table>
-                <h1>${(request.url === '/') ? "WELCOME" : (params.get('sub') === null) ? "NOTFOUND" : params.get('sub')}</h1>
-                <br><br>
-                <p>
-                    ${data}
-                </p>
-            </body>
-        </html>`;
 
-        
-        response.writeHead(200);
-        response.end(template);
+        fs.readdir('page/document' , 'utf8' , (err,file) => {
+            if(err) throw err;
+
+            let list = ``;
+
+            for (var index = 0; index < file.length; index += 1) {
+                
+                if(file[index] === 'NOTFOUND') {
+                    continue;
+                }
+
+                if(file[index] === 'WELCOME') {
+                    list += `<tr><th>${index+1}</th><td><a href="/">WELOCME</a></td></tr>`+`\n`;
+                    continue;
+                }
+
+                list += `<tr><th>${index+1}</th><td><a href="/?sub=${file[index]}">${file[index]}</a></td></tr>`+`\n`;
+            }
+            console.log(list);
+
+            let template = `
+            <!doctype html>
+            <html>
+                <head>
+                    <link rel="shortcut icon" href="#">
+                    <meta charset="utf-8">
+                    <meta name="description" content="김준서의 개인 자기개발 사이트">
+                    <meta name="keywords" content="html,css,javascript,node.js">
+                    <title>김준서</title>
+                </head>
+                <body>
+                    <table border="1" cellspacing="0">
+                    ${list}
+                    </table>
+                    <h1>${(request.url === '/') ? "WELCOME" : (params.get('sub') === null) ? "NOTFOUND" : params.get('sub')}</h1>
+                    <br><br>
+                    <p>
+                        ${data}
+                    </p>
+                </body>
+            </html>`;
+    
+            
+            response.writeHead(200);
+            response.end(template);
+        });
     });
     
 }).listen(3000);

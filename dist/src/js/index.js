@@ -29,8 +29,28 @@ _http.default.createServer(function (request, response) {
 
   _fs.default.readFile("page/document/".concat(request.url === '/' ? "WELCOME" : params.get('sub') === null ? "NOTFOUND" : params.get('sub')), 'utf8', function (err, data) {
     if (err) throw err;
-    var template = "\n        <!doctype html>\n        <html>\n            <head>\n                <link rel=\"shortcut icon\" href=\"#\">\n                <meta charset=\"utf-8\">\n                <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                <title>\uAE40\uC900\uC11C</title>\n            </head>\n            <body>\n                <table border=\"1\" cellspacing=\"0\">\n                    <tr>\n                        <th>1</th>\n                        <td><a href=\"/\">WELCOME</a></td>\n                    </tr>\n                    <tr>\n                        <th>1</th>\n                        <td><a href=\"/?sub=HTML\">HTML</a></td>\n                    </tr>\n                    <tr>\n                        <th>2</th>\n                        <td><a href=\"/?sub=CSS\">CSS</a></td>\n                    </tr>\n                    <tr>\n                        <th>3</th>\n                        <td><a href=\"/?sub=JAVASCRIPT\">JAVASCRIPT</a></td>\n                    </tr>\n                </table>\n                <h1>".concat(request.url === '/' ? "WELCOME" : params.get('sub') === null ? "NOTFOUND" : params.get('sub'), "</h1>\n                <br><br>\n                <p>\n                    ").concat(data, "\n                </p>\n            </body>\n        </html>");
-    response.writeHead(200);
-    response.end(template);
+
+    _fs.default.readdir('page/document', 'utf8', function (err, file) {
+      if (err) throw err;
+      var list = "";
+
+      for (var index = 0; index < file.length; index += 1) {
+        if (file[index] === 'NOTFOUND') {
+          continue;
+        }
+
+        if (file[index] === 'WELCOME') {
+          list += "<tr><th>".concat(index + 1, "</th><td><a href=\"/\">WELOCME</a></td></tr>") + "\n";
+          continue;
+        }
+
+        list += "<tr><th>".concat(index + 1, "</th><td><a href=\"/?sub=").concat(file[index], "\">").concat(file[index], "</a></td></tr>") + "\n";
+      }
+
+      console.log(list);
+      var template = "\n            <!doctype html>\n            <html>\n                <head>\n                    <link rel=\"shortcut icon\" href=\"#\">\n                    <meta charset=\"utf-8\">\n                    <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                    <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                    <title>\uAE40\uC900\uC11C</title>\n                </head>\n                <body>\n                    <table border=\"1\" cellspacing=\"0\">\n                    ".concat(list, "\n                    </table>\n                    <h1>").concat(request.url === '/' ? "WELCOME" : params.get('sub') === null ? "NOTFOUND" : params.get('sub'), "</h1>\n                    <br><br>\n                    <p>\n                        ").concat(data, "\n                    </p>\n                </body>\n            </html>");
+      response.writeHead(200);
+      response.end(template);
+    });
   });
 }).listen(3000);
