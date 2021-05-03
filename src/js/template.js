@@ -1,11 +1,8 @@
 
-
-
 export const templateHTML = (function() {
     
-    let template = ``;
     const createTemplate_private = (data,list,url,subject) => {
-        template = `
+        let template = `
             <!doctype html>
             <html>
                 <head>
@@ -29,11 +26,35 @@ export const templateHTML = (function() {
 
         return template;
     }
+
+    const createList_private = (file) => {
+            let list = ``;
+            let number = 0;
+
+            for (var index = 0; index < file.length; index += 1) {
+                
+                if(file[index] === 'NOTFOUND') {
+                    continue;
+                }
+
+                if(file[index] === 'WELCOME') {
+                    list += `<tr><th>${++number}</th><td><a href="/">WELOCME</a></td></tr>`+`\n`;
+                    continue;
+                }
+
+                list += `<tr><th>${++number}</th><td><a href="/?sub=${file[index]}">${file[index]}</a></td></tr>`+`\n`;
+            }
+
+            return list;
+    }
         
     return {
         createTemplate_public : (data,list,url,subject) => {
             return createTemplate_private(data,list,url,subject);
-        }
+        },
+        createList_public : (folder) => {
+            return createList_private(folder);
+        },
     }
 })();
 

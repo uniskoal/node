@@ -16,22 +16,7 @@ http.createServer((request,response) => {
         fs.readdir('page/document' , 'utf8' , (err,file) => {
             if(err) throw err;
 
-            let list = ``;
-            let number = 0;
-
-            for (var index = 0; index < file.length; index += 1) {
-                
-                if(file[index] === 'NOTFOUND') {
-                    continue;
-                }
-
-                if(file[index] === 'WELCOME') {
-                    list += `<tr><th>${++number}</th><td><a href="/">WELOCME</a></td></tr>`+`\n`;
-                    continue;
-                }
-
-                list += `<tr><th>${++number}</th><td><a href="/?sub=${file[index]}">${file[index]}</a></td></tr>`+`\n`;
-            }
+            let list = templateHTML.createList_public(file);
             
             let template = templateHTML.createTemplate_public(data,list,url,subject);
 
