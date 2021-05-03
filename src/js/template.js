@@ -47,6 +47,25 @@ export const templateHTML = (function() {
 
             return list;
     }
+
+    const createNotFound_private = () => {
+        let notFound = `
+        <!doctype html>
+        <html>
+            <head>
+                <link rel="shortcut icon" href="#">
+                <meta charset="utf-8">
+                <meta name="description" content="김준서의 개인 자기개발 사이트">
+                <meta name="keywords" content="html,css,javascript,node.js">
+                <title>김준서</title>
+            </head>
+            <body>
+                <h1>해당 페이지를 찾을 수 없습니다. </h1>
+            </body>
+        </html>`;
+
+        return notFound;
+    }
         
     return {
         createTemplate_public : (data,list,url,subject) => {
@@ -54,6 +73,9 @@ export const templateHTML = (function() {
         },
         createList_public : (folder) => {
             return createList_private(folder);
+        },
+        createNotFound_public : () => {
+            return createNotFound_private();
         },
     }
 })();
