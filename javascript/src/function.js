@@ -52,7 +52,7 @@ function Warrior(weapon,hp) {
             equip2 : 'necklace',
         }
     };
-    this.character = () => { // ? 매개변수가 없을시 익명함수를 사용할 수 있다.
+    this.character = () => {
         console.log(this); // 자신의 정보를 호출 
     }
     this.weaponchange = () => {

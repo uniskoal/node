@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel index.js --out-dir dist/src/js --watch",
+    "build": "babel src/js --out-dir dist/src/js --watch",
     "server" : "nodemon dist/src/js/index.js"
   },
   "author": "",

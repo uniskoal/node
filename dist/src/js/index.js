@@ -20,6 +20,8 @@ var _http = _interopRequireDefault(require("http"));
 
 var _fs = _interopRequireDefault(require("fs"));
 
+var _template = require("./template.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _http.default.createServer(function (request, response) {
@@ -29,10 +31,13 @@ _http.default.createServer(function (request, response) {
 
   _fs.default.readFile("page/document/".concat(request.url === '/' ? "WELCOME" : params.get('sub') === null ? "NOTFOUND" : params.get('sub')), 'utf8', function (err, data) {
     if (err) throw err;
+    var url = request.url;
+    var subject = params.get('sub');
 
     _fs.default.readdir('page/document', 'utf8', function (err, file) {
       if (err) throw err;
       var list = "";
+      var number = 0;
 
       for (var index = 0; index < file.length; index += 1) {
         if (file[index] === 'NOTFOUND') {
@@ -40,15 +45,15 @@ _http.default.createServer(function (request, response) {
         }
 
         if (file[index] === 'WELCOME') {
-          list += "<tr><th>".concat(index + 1, "</th><td><a href=\"/\">WELOCME</a></td></tr>") + "\n";
+          list += "<tr><th>".concat(++number, "</th><td><a href=\"/\">WELOCME</a></td></tr>") + "\n";
           continue;
         }
 
-        list += "<tr><th>".concat(index + 1, "</th><td><a href=\"/?sub=").concat(file[index], "\">").concat(file[index], "</a></td></tr>") + "\n";
+        list += "<tr><th>".concat(++number, "</th><td><a href=\"/?sub=").concat(file[index], "\">").concat(file[index], "</a></td></tr>") + "\n";
       }
 
-      console.log(list);
-      var template = "\n            <!doctype html>\n            <html>\n                <head>\n                    <link rel=\"shortcut icon\" href=\"#\">\n                    <meta charset=\"utf-8\">\n                    <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                    <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                    <title>\uAE40\uC900\uC11C</title>\n                </head>\n                <body>\n                    <table border=\"1\" cellspacing=\"0\">\n                    ".concat(list, "\n                    </table>\n                    <h1>").concat(request.url === '/' ? "WELCOME" : params.get('sub') === null ? "NOTFOUND" : params.get('sub'), "</h1>\n                    <br><br>\n                    <p>\n                        ").concat(data, "\n                    </p>\n                </body>\n            </html>");
+      var template = _template.templateHTML.createTemplate_public(data, list, url, subject);
+
       response.writeHead(200);
       response.end(template);
     });
