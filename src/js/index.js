@@ -12,8 +12,8 @@ http.createServer((request,response) => {
         const subject = params.get('sub');
 
         fs.readdir('page/document' , 'utf8' , (err,file) => {
-            if(err) throw err;
             
+            console.log(subject);
             let paramSearch = false;
 
             for(let index of file) {
@@ -34,8 +34,6 @@ http.createServer((request,response) => {
                 
                 response.writeHead(200);
                 response.end(notfound);
-
-                
             }
             
         });

@@ -16,7 +16,7 @@ export const templateHTML = (function() {
                     <table border="1" cellspacing="0">
                     ${list}
                     </table>
-                    <h1>${(url === '/') ? "WELCOME" : (subject === null) ? "NOTFOUND" : subject}</h1>
+                    <h1>${(url === '/') ? "WELCOME" : subject}</h1>
                     <br><br>
                     <p>
                         ${data}

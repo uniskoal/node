@@ -50,7 +50,7 @@ _http.default.createServer(function (request, response) {
     var subject = params.get('sub');
 
     _fs.default.readdir('page/document', 'utf8', function (err, file) {
-      if (err) throw err;
+      console.log(subject);
       var paramSearch = false;
 
       var _iterator = _createForOfIteratorHelper(file),
