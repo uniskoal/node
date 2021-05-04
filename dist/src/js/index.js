@@ -22,7 +22,7 @@ require("core-js/modules/es.array.iterator.js");
 
 require("core-js/modules/web.dom-collections.iterator.js");
 
-require("core-js/modules/es.string.replace.js");
+require("core-js/modules/es.string.search.js");
 
 require("core-js/modules/es.regexp.exec.js");
 
@@ -41,16 +41,20 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 _http.default.createServer(function (request, response) {
-  var params = new URLSearchParams(request.url.replace('/', '')); // 요청된 값에서 순수하게 파라미터만을 뽑아오는 코드입니다. 기본적으로 ?는 무시하지만 /는 무시하지 못하기 때문에 원활한 값이 나오지 않습니다.
+  var url = new URL(request.url, "http://localhost:3000");
+  var params = new URLSearchParams(url.search); // 요청된 값에서 순수하게 파라미터만을 뽑아오는 코드입니다. 기본적으로 ?는 무시하지만 /는 무시하지 못하기 때문에 원활한 값이 나오지 않습니다.
 
-  console.log(params);
-
-  _fs.default.readFile("page/document/".concat(request.url === '/' ? "WELCOME" : params.get('sub')), 'utf8', function (err, data) {
-    var url = request.url;
+  _fs.default.readFile("page/document/".concat(url.search === '' && url.pathname == '/' ? "WELCOME" : params.get('sub')), 'utf8', function (err, data) {
     var subject = params.get('sub');
 
+    if (url.pathname === '/create') {
+      var document = _template.templateHTML.createDocument_public();
+
+      response.writeHead(200);
+      response.end(document);
+    }
+
     _fs.default.readdir('page/document', 'utf8', function (err, file) {
-      console.log(subject);
       var paramSearch = false;
 
       var _iterator = _createForOfIteratorHelper(file),
@@ -60,7 +64,7 @@ _http.default.createServer(function (request, response) {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var index = _step.value;
 
-          if (subject === index || url === '/') {
+          if (subject === index || url.search === '' && url.pathname == '/') {
             paramSearch = true;
           }
         }
@@ -73,7 +77,7 @@ _http.default.createServer(function (request, response) {
       if (paramSearch) {
         var list = _template.templateHTML.createList_public(file);
 
-        var template = _template.templateHTML.createTemplate_public(data, list, url, subject);
+        var template = _template.templateHTML.createTemplate_public(data, list, url.search, subject);
 
         response.writeHead(200);
         response.end(template);

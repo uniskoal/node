@@ -16,8 +16,10 @@ export const templateHTML = (function() {
                     <table border="1" cellspacing="0">
                     ${list}
                     </table>
-                    <h1>${(url === '/') ? "WELCOME" : subject}</h1>
-                    <br><br>
+                    <h1>${(url === '') ? "WELCOME" : subject}</h1>
+                    <br>
+                    <a href="/create"><h3>create</h3></a>
+                    <br>
                     <p>
                         ${data}
                     </p>
@@ -66,6 +68,32 @@ export const templateHTML = (function() {
 
         return notFound;
     }
+
+    const createDocument_private = () => {
+        let document = `<!doctype html>
+        <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="description" content="김준서의 개인 자기개발 사이트">
+                <meta name="keywords" content="html,css,javascript,node.js">
+                <title>김준서</title>
+            </head>
+            <body>
+                <form action="http://localhost:3000/process_create" method="post">
+                    <p><input type="text" name="title" placeholder="제목"></p>
+                    <p>
+                        <textarea name="content" cols="80" rows="20" maxlength="400"></textarea>
+                    </p>
+                    <p>
+                        <input type="submit" value="전송">
+                    </p> 
+                </form>
+                <h1></h1>
+            </body>
+        </html>`;
+
+        return document;
+    }
         
     return {
         createTemplate_public : (data,list,url,subject) => {
@@ -77,6 +105,9 @@ export const templateHTML = (function() {
         createNotFound_public : () => {
             return createNotFound_private();
         },
+        createDocument_public : () => {
+            return createDocument_private();
+        }
     }
 })();
 

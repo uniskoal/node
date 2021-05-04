@@ -9,7 +9,7 @@ require("core-js/modules/es.array.concat.js");
 
 var templateHTML = function () {
   var createTemplate_private = function createTemplate_private(data, list, url, subject) {
-    var template = "\n            <!doctype html>\n            <html>\n                <head>\n                    <link rel=\"shortcut icon\" href=\"#\">\n                    <meta charset=\"utf-8\">\n                    <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                    <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                    <title>\uAE40\uC900\uC11C</title>\n                </head>\n                <body>\n                    <table border=\"1\" cellspacing=\"0\">\n                    ".concat(list, "\n                    </table>\n                    <h1>").concat(url === '/' ? "WELCOME" : subject, "</h1>\n                    <br><br>\n                    <p>\n                        ").concat(data, "\n                    </p>\n                </body>\n            </html>");
+    var template = "\n            <!doctype html>\n            <html>\n                <head>\n                    <link rel=\"shortcut icon\" href=\"#\">\n                    <meta charset=\"utf-8\">\n                    <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                    <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                    <title>\uAE40\uC900\uC11C</title>\n                </head>\n                <body>\n                    <table border=\"1\" cellspacing=\"0\">\n                    ".concat(list, "\n                    </table>\n                    <h1>").concat(url === '' ? "WELCOME" : subject, "</h1>\n                    <br>\n                    <a href=\"/create\"><h3>create</h3></a>\n                    <br>\n                    <p>\n                        ").concat(data, "\n                    </p>\n                </body>\n            </html>");
     return template;
   };
 
@@ -38,6 +38,11 @@ var templateHTML = function () {
     return notFound;
   };
 
+  var createDocument_private = function createDocument_private() {
+    var document = "<!doctype html>\n        <html>\n            <head>\n                <meta charset=\"utf-8\">\n                <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                <title>\uAE40\uC900\uC11C</title>\n            </head>\n            <body>\n                <form action=\"http://localhost:3000/process_create\" method=\"post\">\n                    <p><input type=\"text\" name=\"title\" placeholder=\"\uC81C\uBAA9\"></p>\n                    <p>\n                        <textarea name=\"content\" cols=\"80\" rows=\"20\" maxlength=\"400\"></textarea>\n                    </p>\n                    <p>\n                        <input type=\"submit\" value=\"\uC804\uC1A1\">\n                    </p> \n                </form>\n                <h1></h1>\n            </body>\n        </html>";
+    return document;
+  };
+
   return {
     createTemplate_public: function createTemplate_public(data, list, url, subject) {
       return createTemplate_private(data, list, url, subject);
@@ -47,6 +52,9 @@ var templateHTML = function () {
     },
     createNotFound_public: function createNotFound_public() {
       return createNotFound_private();
+    },
+    createDocument_public: function createDocument_public() {
+      return createDocument_private();
     }
   };
 }();
