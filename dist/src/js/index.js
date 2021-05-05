@@ -32,6 +32,8 @@ var _fs = _interopRequireDefault(require("fs"));
 
 var _template = require("./template.js");
 
+var _querystring = _interopRequireDefault(require("querystring"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -44,6 +46,8 @@ _http.default.createServer(function (request, response) {
   var url = new URL(request.url, "http://localhost:3000");
   var params = new URLSearchParams(url.search); // 요청된 값에서 순수하게 파라미터만을 뽑아오는 코드입니다. 기본적으로 ?는 무시하지만 /는 무시하지 못하기 때문에 원활한 값이 나오지 않습니다.
 
+  console.log(url);
+
   _fs.default.readFile("page/document/".concat(url.search === '' && url.pathname == '/' ? "WELCOME" : params.get('sub')), 'utf8', function (err, data) {
     var subject = params.get('sub');
 
@@ -52,41 +56,64 @@ _http.default.createServer(function (request, response) {
 
       response.writeHead(200);
       response.end(document);
-    }
+    } else if (url.pathname === '/process_create') {
+      var body = "";
+      request.on('data', function (data) {
+        body += data;
+      });
+      request.on('end', function () {
+        var postQuery = new URLSearchParams(decodeURIComponent(body));
+        console.log(postQuery);
 
-    _fs.default.readdir('page/document', 'utf8', function (err, file) {
-      var paramSearch = false;
-
-      var _iterator = _createForOfIteratorHelper(file),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var index = _step.value;
-
-          if (subject === index || url.search === '' && url.pathname == '/') {
-            paramSearch = true;
-          }
+        if (postQuery.get('title') === '' || postQuery.get('content') === '') {
+          response.writeHead(301, {
+            Location: "http://localhost:3000/create"
+          });
+          response.end();
+        } else {
+          _fs.default.writeFile("page/document/".concat(postQuery.get('title')), postQuery.get('content'), 'utf8', function (err) {
+            response.writeHead(301, {
+              Location: "http://localhost:3000/"
+            });
+            response.end();
+          });
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
+      });
+    } else {
+      _fs.default.readdir('page/document', 'utf8', function (err, file) {
+        var paramSearch = false;
 
-      if (paramSearch) {
-        var list = _template.templateHTML.createList_public(file);
+        var _iterator = _createForOfIteratorHelper(file),
+            _step;
 
-        var template = _template.templateHTML.createTemplate_public(data, list, url.search, subject);
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var index = _step.value;
 
-        response.writeHead(200);
-        response.end(template);
-      } else {
-        var notfound = _template.templateHTML.createNotFound_public();
+            if (subject === index || url.search === '' && url.pathname == '/') {
+              paramSearch = true;
+            }
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
 
-        response.writeHead(200);
-        response.end(notfound);
-      }
-    });
+        if (paramSearch) {
+          var list = _template.templateHTML.createList_public(file);
+
+          var template = _template.templateHTML.createTemplate_public(data, list, url.search, subject);
+
+          response.writeHead(200);
+          response.end(template);
+        } else {
+          var notfound = _template.templateHTML.createNotFound_public();
+
+          response.writeHead(200);
+          response.end(notfound);
+        }
+      });
+    }
   });
 }).listen(3000);

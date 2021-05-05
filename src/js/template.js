@@ -6,7 +6,7 @@ export const templateHTML = (function() {
             <!doctype html>
             <html>
                 <head>
-                    <link rel="shortcut icon" href="#">
+                    <link rel="icon" href="data:,">
                     <meta charset="utf-8">
                     <meta name="description" content="김준서의 개인 자기개발 사이트">
                     <meta name="keywords" content="html,css,javascript,node.js">
@@ -55,7 +55,7 @@ export const templateHTML = (function() {
         <!doctype html>
         <html>
             <head>
-                <link rel="shortcut icon" href="#">
+                <link rel="icon" href="data:,">
                 <meta charset="utf-8">
                 <meta name="description" content="김준서의 개인 자기개발 사이트">
                 <meta name="keywords" content="html,css,javascript,node.js">
@@ -73,6 +73,7 @@ export const templateHTML = (function() {
         let document = `<!doctype html>
         <html>
             <head>
+                <link rel="icon" href="data:,">
                 <meta charset="utf-8">
                 <meta name="description" content="김준서의 개인 자기개발 사이트">
                 <meta name="keywords" content="html,css,javascript,node.js">
@@ -82,7 +83,7 @@ export const templateHTML = (function() {
                 <form action="http://localhost:3000/process_create" method="post">
                     <p><input type="text" name="title" placeholder="제목"></p>
                     <p>
-                        <textarea name="content" cols="80" rows="20" maxlength="400"></textarea>
+                        <textarea name="content" cols="80" rows="20" maxlength="200"></textarea>
                     </p>
                     <p>
                         <input type="submit" value="전송">
