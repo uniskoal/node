@@ -52,7 +52,13 @@ _http.default.createServer(function (request, response) {
     var subject = params.get('sub');
 
     if (url.pathname === '/create') {
-      var document = _template.templateHTML.createDocument_public();
+      var success;
+
+      if (params.get('success') === 'false') {
+        success = false;
+      }
+
+      var document = _template.templateHTML.createDocument_public(success);
 
       response.writeHead(200);
       response.end(document);
@@ -67,7 +73,7 @@ _http.default.createServer(function (request, response) {
 
         if (postQuery.get('title') === '' || postQuery.get('content') === '') {
           response.writeHead(301, {
-            Location: "http://localhost:3000/create"
+            Location: "http://localhost:3000/create?success=false"
           });
           response.end();
         } else {

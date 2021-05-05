@@ -69,7 +69,10 @@ export const templateHTML = (function() {
         return notFound;
     }
 
-    const createDocument_private = () => {
+    const createDocument_private = (success) => {
+        let warning = `
+            <p style="color:red">빈 곳이 없게 작성 해 주세요!</p>
+        `
         let document = `<!doctype html>
         <html>
             <head>
@@ -85,6 +88,7 @@ export const templateHTML = (function() {
                     <p>
                         <textarea name="content" cols="80" rows="20" maxlength="200"></textarea>
                     </p>
+                    ${(success == false) ? warning : ''}
                     <p>
                         <input type="submit" value="전송">
                     </p> 
@@ -106,8 +110,8 @@ export const templateHTML = (function() {
         createNotFound_public : () => {
             return createNotFound_private();
         },
-        createDocument_public : () => {
-            return createDocument_private();
+        createDocument_public : (success) => {
+            return createDocument_private(success);
         }
     }
 })();

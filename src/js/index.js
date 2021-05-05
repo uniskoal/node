@@ -12,9 +12,14 @@ http.createServer((request,response) => {
     fs.readFile(`page/document/${(url.search === '' && url.pathname == '/') ? "WELCOME" : params.get('sub')}` , 'utf8' , (err,data) => {
         
         const subject = params.get('sub');
-
+        
         if(url.pathname === '/create') {
-            let document = templateHTML.createDocument_public();
+
+            let success;
+            if(params.get('success') === 'false') {
+                success = false;
+            }
+            let document = templateHTML.createDocument_public(success);
                 
             response.writeHead(200);
             response.end(document);
@@ -30,7 +35,7 @@ http.createServer((request,response) => {
                 let postQuery = new URLSearchParams(decodeURIComponent(body));
                 console.log(postQuery);
                 if(postQuery.get('title') === '' || postQuery.get('content') === '' ) {
-                    response.writeHead(301 , { Location : "http://localhost:3000/create"});
+                    response.writeHead(301 , { Location : "http://localhost:3000/create?success=false"});
                     response.end();
                 }
                 else {

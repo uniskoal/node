@@ -38,8 +38,9 @@ var templateHTML = function () {
     return notFound;
   };
 
-  var createDocument_private = function createDocument_private() {
-    var document = "<!doctype html>\n        <html>\n            <head>\n                <link rel=\"icon\" href=\"data:,\">\n                <meta charset=\"utf-8\">\n                <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                <title>\uAE40\uC900\uC11C</title>\n            </head>\n            <body>\n                <form action=\"http://localhost:3000/process_create\" method=\"post\">\n                    <p><input type=\"text\" name=\"title\" placeholder=\"\uC81C\uBAA9\"></p>\n                    <p>\n                        <textarea name=\"content\" cols=\"80\" rows=\"20\" maxlength=\"200\"></textarea>\n                    </p>\n                    <p>\n                        <input type=\"submit\" value=\"\uC804\uC1A1\">\n                    </p> \n                </form>\n                <h1></h1>\n            </body>\n        </html>";
+  var createDocument_private = function createDocument_private(success) {
+    var warning = "\n            <p style=\"color:red\">\uBE48 \uACF3\uC774 \uC5C6\uAC8C \uC791\uC131 \uD574 \uC8FC\uC138\uC694!</p>\n        ";
+    var document = "<!doctype html>\n        <html>\n            <head>\n                <link rel=\"icon\" href=\"data:,\">\n                <meta charset=\"utf-8\">\n                <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                <title>\uAE40\uC900\uC11C</title>\n            </head>\n            <body>\n                <form action=\"http://localhost:3000/process_create\" method=\"post\">\n                    <p><input type=\"text\" name=\"title\" placeholder=\"\uC81C\uBAA9\"></p>\n                    <p>\n                        <textarea name=\"content\" cols=\"80\" rows=\"20\" maxlength=\"200\"></textarea>\n                    </p>\n                    ".concat(success == false ? warning : '', "\n                    <p>\n                        <input type=\"submit\" value=\"\uC804\uC1A1\">\n                    </p> \n                </form>\n                <h1></h1>\n            </body>\n        </html>");
     return document;
   };
 
@@ -53,8 +54,8 @@ var templateHTML = function () {
     createNotFound_public: function createNotFound_public() {
       return createNotFound_private();
     },
-    createDocument_public: function createDocument_public() {
-      return createDocument_private();
+    createDocument_public: function createDocument_public(success) {
+      return createDocument_private(success);
     }
   };
 }();
