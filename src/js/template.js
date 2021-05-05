@@ -2,6 +2,9 @@
 export const templateHTML = (function() {
     
     const createTemplate_private = (data,list,url,subject) => {
+        let update = `
+        <a href="/update"><h3>update</h3></a>
+        `;
         let template = `
             <!doctype html>
             <html>
@@ -19,6 +22,7 @@ export const templateHTML = (function() {
                     <h1>${(url === '') ? "WELCOME" : subject}</h1>
                     <br>
                     <a href="/create"><h3>create</h3></a>
+                    ${(url) !== '' ? update : ''}
                     <br>
                     <p>
                         ${data}
