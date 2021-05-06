@@ -3,7 +3,7 @@ export const templateHTML = (function() {
     
     const createTemplate_private = (data,list,url,subject) => {
         let update = `
-        <a href="/update"><h3>update</h3></a>
+        <a href="/update?sub=${subject}"><h3>update</h3></a>
         `;
         let template = `
             <!doctype html>
@@ -73,10 +73,21 @@ export const templateHTML = (function() {
         return notFound;
     }
 
-    const createDocument_private = (success) => {
+    const createDocument_private = (success,pathname,update_params) => {
         let warning = `
             <p style="color:red">빈 곳이 없게 작성 해 주세요!</p>
         `
+        let select_url = ``;
+        
+        if (pathname === '/create') {
+            select_url = `create`;
+        }
+        else if (pathname === '/update') {
+            select_url = `update`;
+        }
+
+        let update_form = `<p><input type="hidden" name="id" value="${update_params}"></p>`;
+
         let document = `<!doctype html>
         <html>
             <head>
@@ -87,7 +98,8 @@ export const templateHTML = (function() {
                 <title>김준서</title>
             </head>
             <body>
-                <form action="http://localhost:3000/process_create" method="post">
+                <form action="/process_${select_url}" method="post">
+                    ${(update_form != null ? update_form : '')}
                     <p><input type="text" name="title" placeholder="제목"></p>
                     <p>
                         <textarea name="content" cols="80" rows="20" maxlength="200"></textarea>
@@ -114,8 +126,8 @@ export const templateHTML = (function() {
         createNotFound_public : () => {
             return createNotFound_private();
         },
-        createDocument_public : (success) => {
-            return createDocument_private(success);
+        createDocument_public : (success,pathname,update_params) => {
+            return createDocument_private(success,pathname,update_params);
         }
     }
 })();

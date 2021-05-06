@@ -1,7 +1,6 @@
 import http from 'http';
 import fs from 'fs';
 import { templateHTML } from './template.js';
-import querystring from 'querystring';
 
 
 http.createServer((request,response) => {
@@ -13,18 +12,21 @@ http.createServer((request,response) => {
         
         const subject = params.get('sub');
         
-        if(url.pathname === '/create') {
+        if(url.pathname === '/create' || url.pathname === '/update') {
+            
+            let update_params = url.searchParams.get("sub");
 
+            console.log(update_params);
             let success;
             if(params.get('success') === 'false') {
                 success = false;
             }
-            let document = templateHTML.createDocument_public(success);
+            let document = templateHTML.createDocument_public(success,url.pathname,update_params);
                 
             response.writeHead(200);
             response.end(document);
         }
-        else if(url.pathname === '/process_create') {
+        else if(url.pathname === `/process_create`) {
             let body = "";
     
             request.on('data' , (data) => {
@@ -35,17 +37,37 @@ http.createServer((request,response) => {
                 let postQuery = new URLSearchParams(decodeURIComponent(body));
                 console.log(postQuery);
                 if(postQuery.get('title') === '' || postQuery.get('content') === '' ) {
-                    response.writeHead(301 , { Location : "http://localhost:3000/create?success=false"});
+                    response.writeHead(301 , { Location : "/create?success=false"});
                     response.end();
                 }
                 else {
                     fs.writeFile(`page/document/${postQuery.get('title')}` , postQuery.get('content'), 'utf8' , (err) => {
                         
-                        response.writeHead(301 , { Location : "http://localhost:3000/"});
+                        response.writeHead(301 , { Location : "/"});
                         response.end();
                     })
                 }
             });
+        }
+        else if(url.pathname === `/process_update`) {
+            let body = "";
+
+            request.on('data' , (data) => {
+                body += data;
+            });
+
+            request.on('end' , () => {
+                let postQuery = new URLSearchParams(decodeURIComponent(body));
+                console.log(postQuery);
+
+                fs.rename(`page/document/${postQuery.get("id")}` , `page/document/${postQuery.get("title")}` , (err) => {
+                    fs.writeFile(`page/document/${postQuery.get('title')}` , postQuery.get('content'), 'utf8' , (err) => {
+                        
+                        response.writeHead(301 , { Location : "/"});
+                        response.end();
+                    });
+                });
+;            });
         }
         else {
             fs.readdir('page/document' , 'utf8' , (err,file) => {

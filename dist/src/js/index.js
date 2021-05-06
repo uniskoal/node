@@ -32,8 +32,6 @@ var _fs = _interopRequireDefault(require("fs"));
 
 var _template = require("./template.js");
 
-var _querystring = _interopRequireDefault(require("querystring"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -51,18 +49,20 @@ _http.default.createServer(function (request, response) {
   _fs.default.readFile("page/document/".concat(url.search === '' && url.pathname == '/' ? "WELCOME" : params.get('sub')), 'utf8', function (err, data) {
     var subject = params.get('sub');
 
-    if (url.pathname === '/create') {
+    if (url.pathname === '/create' || url.pathname === '/update') {
+      var update_params = url.searchParams.get("sub");
+      console.log(update_params);
       var success;
 
       if (params.get('success') === 'false') {
         success = false;
       }
 
-      var document = _template.templateHTML.createDocument_public(success);
+      var document = _template.templateHTML.createDocument_public(success, url.pathname, update_params);
 
       response.writeHead(200);
       response.end(document);
-    } else if (url.pathname === '/process_create') {
+    } else if (url.pathname === "/process_create") {
       var body = "";
       request.on('data', function (data) {
         body += data;
@@ -73,17 +73,37 @@ _http.default.createServer(function (request, response) {
 
         if (postQuery.get('title') === '' || postQuery.get('content') === '') {
           response.writeHead(301, {
-            Location: "http://localhost:3000/create?success=false"
+            Location: "/create?success=false"
           });
           response.end();
         } else {
           _fs.default.writeFile("page/document/".concat(postQuery.get('title')), postQuery.get('content'), 'utf8', function (err) {
             response.writeHead(301, {
-              Location: "http://localhost:3000/"
+              Location: "/"
             });
             response.end();
           });
         }
+      });
+    } else if (url.pathname === "/process_update") {
+      var _body = "";
+      request.on('data', function (data) {
+        _body += data;
+      });
+      request.on('end', function () {
+        var postQuery = new URLSearchParams(decodeURIComponent(_body));
+        console.log(postQuery);
+
+        _fs.default.rename("page/document/".concat(postQuery.get("id")), "page/document/".concat(postQuery.get("title")), function (err) {
+          _fs.default.writeFile("page/document/".concat(postQuery.get('title')), postQuery.get('content'), 'utf8', function (err) {
+            response.writeHead(301, {
+              Location: "/"
+            });
+            response.end();
+          });
+        });
+
+        ;
       });
     } else {
       _fs.default.readdir('page/document', 'utf8', function (err, file) {

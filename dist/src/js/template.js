@@ -9,7 +9,7 @@ require("core-js/modules/es.array.concat.js");
 
 var templateHTML = function () {
   var createTemplate_private = function createTemplate_private(data, list, url, subject) {
-    var update = "\n        <a href=\"/update\"><h3>update</h3></a>\n        ";
+    var update = "\n        <a href=\"/update?sub=".concat(subject, "\"><h3>update</h3></a>\n        ");
     var template = "\n            <!doctype html>\n            <html>\n                <head>\n                    <link rel=\"icon\" href=\"data:,\">\n                    <meta charset=\"utf-8\">\n                    <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                    <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                    <title>\uAE40\uC900\uC11C</title>\n                </head>\n                <body>\n                    <table border=\"1\" cellspacing=\"0\">\n                    ".concat(list, "\n                    </table>\n                    <h1>").concat(url === '' ? "WELCOME" : subject, "</h1>\n                    <br>\n                    <a href=\"/create\"><h3>create</h3></a>\n                    ").concat(url !== '' ? update : '', "\n                    <br>\n                    <p>\n                        ").concat(data, "\n                    </p>\n                </body>\n            </html>");
     return template;
   };
@@ -39,9 +39,18 @@ var templateHTML = function () {
     return notFound;
   };
 
-  var createDocument_private = function createDocument_private(success) {
+  var createDocument_private = function createDocument_private(success, pathname, update_params) {
     var warning = "\n            <p style=\"color:red\">\uBE48 \uACF3\uC774 \uC5C6\uAC8C \uC791\uC131 \uD574 \uC8FC\uC138\uC694!</p>\n        ";
-    var document = "<!doctype html>\n        <html>\n            <head>\n                <link rel=\"icon\" href=\"data:,\">\n                <meta charset=\"utf-8\">\n                <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                <title>\uAE40\uC900\uC11C</title>\n            </head>\n            <body>\n                <form action=\"http://localhost:3000/process_create\" method=\"post\">\n                    <p><input type=\"text\" name=\"title\" placeholder=\"\uC81C\uBAA9\"></p>\n                    <p>\n                        <textarea name=\"content\" cols=\"80\" rows=\"20\" maxlength=\"200\"></textarea>\n                    </p>\n                    ".concat(success == false ? warning : '', "\n                    <p>\n                        <input type=\"submit\" value=\"\uC804\uC1A1\">\n                    </p> \n                </form>\n                <h1></h1>\n            </body>\n        </html>");
+    var select_url = "";
+
+    if (pathname === '/create') {
+      select_url = "create";
+    } else if (pathname === '/update') {
+      select_url = "update";
+    }
+
+    var update_form = "<p><input type=\"hidden\" name=\"id\" value=\"".concat(update_params, "\"></p>");
+    var document = "<!doctype html>\n        <html>\n            <head>\n                <link rel=\"icon\" href=\"data:,\">\n                <meta charset=\"utf-8\">\n                <meta name=\"description\" content=\"\uAE40\uC900\uC11C\uC758 \uAC1C\uC778 \uC790\uAE30\uAC1C\uBC1C \uC0AC\uC774\uD2B8\">\n                <meta name=\"keywords\" content=\"html,css,javascript,node.js\">\n                <title>\uAE40\uC900\uC11C</title>\n            </head>\n            <body>\n                <form action=\"/process_".concat(select_url, "\" method=\"post\">\n                    ").concat(update_form != null ? update_form : '', "\n                    <p><input type=\"text\" name=\"title\" placeholder=\"\uC81C\uBAA9\"></p>\n                    <p>\n                        <textarea name=\"content\" cols=\"80\" rows=\"20\" maxlength=\"200\"></textarea>\n                    </p>\n                    ").concat(success == false ? warning : '', "\n                    <p>\n                        <input type=\"submit\" value=\"\uC804\uC1A1\">\n                    </p> \n                </form>\n                <h1></h1>\n            </body>\n        </html>");
     return document;
   };
 
@@ -55,8 +64,8 @@ var templateHTML = function () {
     createNotFound_public: function createNotFound_public() {
       return createNotFound_private();
     },
-    createDocument_public: function createDocument_public(success) {
-      return createDocument_private(success);
+    createDocument_public: function createDocument_public(success, pathname, update_params) {
+      return createDocument_private(success, pathname, update_params);
     }
   };
 }();
