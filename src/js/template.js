@@ -5,6 +5,9 @@ export const templateHTML = (function() {
         let update = `
         <a href="/update?sub=${subject}"><h3>update</h3></a>
         `;
+        let remove = `
+        <a href="/delete?sub=${subject}"><h3>delete</h3></a>
+        `;
         let template = `
             <!doctype html>
             <html>
@@ -23,6 +26,7 @@ export const templateHTML = (function() {
                     <br>
                     <a href="/create"><h3>create</h3></a>
                     ${(url) !== '' ? update : ''}
+                    ${(url) !== '' ? remove : ''}
                     <br>
                     <p>
                         ${data}

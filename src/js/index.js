@@ -26,6 +26,14 @@ http.createServer((request,response) => {
             response.writeHead(200);
             response.end(document);
         }
+        if(url.pathname === '/delete') {
+            fs.unlink(`page/document/${params.get('sub')}` , (err) => {
+                if(err) throw err;
+
+                response.writeHead(301 , { Location : '/'});
+                response.end();
+            });
+        }
         else if(url.pathname === `/process_create`) {
             let body = "";
     

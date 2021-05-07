@@ -62,6 +62,16 @@ _http.default.createServer(function (request, response) {
 
       response.writeHead(200);
       response.end(document);
+    }
+
+    if (url.pathname === '/delete') {
+      _fs.default.unlink("page/document/".concat(params.get('sub')), function (err) {
+        if (err) throw err;
+        response.writeHead(301, {
+          Location: '/'
+        });
+        response.end();
+      });
     } else if (url.pathname === "/process_create") {
       var body = "";
       request.on('data', function (data) {
