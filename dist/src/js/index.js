@@ -32,6 +32,8 @@ var _fs = _interopRequireDefault(require("fs"));
 
 var _template = require("./template.js");
 
+var _sanitizeHtml = _interopRequireDefault(require("sanitize-html"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -87,7 +89,7 @@ _http.default.createServer(function (request, response) {
           });
           response.end();
         } else {
-          _fs.default.writeFile("page/document/".concat(postQuery.get('title')), postQuery.get('content'), 'utf8', function (err) {
+          _fs.default.writeFile("page/document/".concat(postQuery.get('title')), (0, _sanitizeHtml.default)(postQuery.get('content')), 'utf8', function (err) {
             response.writeHead(301, {
               Location: "/"
             });
@@ -105,7 +107,7 @@ _http.default.createServer(function (request, response) {
         console.log(postQuery);
 
         _fs.default.rename("page/document/".concat(postQuery.get("id")), "page/document/".concat(postQuery.get("title")), function (err) {
-          _fs.default.writeFile("page/document/".concat(postQuery.get('title')), postQuery.get('content'), 'utf8', function (err) {
+          _fs.default.writeFile("page/document/".concat(postQuery.get('title')), (0, _sanitizeHtml.default)(postQuery.get('content')), 'utf8', function (err) {
             response.writeHead(301, {
               Location: "/"
             });

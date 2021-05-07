@@ -1,6 +1,7 @@
 import http from 'http';
 import fs from 'fs';
 import { templateHTML } from './template.js';
+import sanitizehtml from 'sanitize-html';
 
 
 http.createServer((request,response) => {
@@ -9,6 +10,7 @@ http.createServer((request,response) => {
     const params = new URLSearchParams(url.search); // 요청된 값에서 순수하게 파라미터만을 뽑아오는 코드입니다. 기본적으로 ?는 무시하지만 /는 무시하지 못하기 때문에 원활한 값이 나오지 않습니다.
     console.log(url);
     fs.readFile(`page/document/${(url.search === '' && url.pathname == '/') ? "WELCOME" : params.get('sub')}` , 'utf8' , (err,data) => {
+        
         
         const subject = params.get('sub');
         
@@ -49,11 +51,11 @@ http.createServer((request,response) => {
                     response.end();
                 }
                 else {
-                    fs.writeFile(`page/document/${postQuery.get('title')}` , postQuery.get('content'), 'utf8' , (err) => {
+                    fs.writeFile(`page/document/${postQuery.get('title')}` , sanitizehtml(postQuery.get('content')), 'utf8' , (err) => {
                         
                         response.writeHead(301 , { Location : "/"});
                         response.end();
-                    })
+                    });
                 }
             });
         }
@@ -69,7 +71,7 @@ http.createServer((request,response) => {
                 console.log(postQuery);
 
                 fs.rename(`page/document/${postQuery.get("id")}` , `page/document/${postQuery.get("title")}` , (err) => {
-                    fs.writeFile(`page/document/${postQuery.get('title')}` , postQuery.get('content'), 'utf8' , (err) => {
+                    fs.writeFile(`page/document/${postQuery.get('title')}` , sanitizehtml(postQuery.get('content')), 'utf8' , (err) => {
                         
                         response.writeHead(301 , { Location : "/"});
                         response.end();
