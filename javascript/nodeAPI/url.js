@@ -122,7 +122,7 @@ console.log(google.protocol);
 // ! 유효하지 않은 프로토콜 이름은 무시됩니다.
 
 // * search 
-// ? 자료 요청 패스 뒷부부에서 query를 나타내는 ? 이후 문자열을 반환합니다.
+// ? 자료 요청 패스 뒷부분에서 query를 나타내는 ? 이후 문자열을 반환합니다.
 
 console.log(google.search);
 
