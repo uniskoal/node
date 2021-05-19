@@ -91,6 +91,94 @@ app.get('/', function (request, response) {
     });
   });
 });
+app.get('/create', function (request, response) {
+  var url = new _url.URL(request.url, "http://localhost:3000/");
+  var params = new URLSearchParams(url.search);
+  var success;
+
+  if (params.get('success') === 'false') {
+    success = false;
+  }
+
+  var document = _template.templateHTML.createDocument_public(success, url.pathname, null);
+
+  response.send(document);
+});
+app.get('/update', function (request, response) {
+  var url = new _url.URL(request.url, "http://localhost:3000/");
+  var params = new URLSearchParams(url.search);
+  var update_params = params.get('sub');
+  var success;
+
+  if (params.get('success') === 'false') {
+    success = false;
+  }
+
+  var document = _template.templateHTML.createDocument_public(success, url.pathname, update_params);
+
+  response.send(document);
+});
+app.get('/delete', function (request, response) {
+  var url = new _url.URL(request.url, "http://localhost:3000/");
+  var params = new URLSearchParams(url.search);
+
+  _fs.default.unlink("page/document/".concat(params.get('sub')), function (err) {
+    if (err) throw err;
+    response.writeHead(301, {
+      Location: '/'
+    });
+    response.end();
+  });
+});
+app.post('/process_create', function (request, response) {
+  var body = "";
+  request.on('data', function (data) {
+    body += data;
+  });
+  request.on('end', function () {
+    var postQuery = new URLSearchParams(decodeURIComponent(body));
+    console.log(postQuery);
+
+    if (postQuery.get('title') === '' || postQuery.get('content') === '') {
+      response.writeHead(301, {
+        Location: "/create?success=false"
+      });
+      response.end();
+    } else {
+      _fs.default.writeFile("page/document/".concat(postQuery.get('title')), (0, _sanitizeHtml.default)(postQuery.get('content')), 'utf8', function (err) {
+        response.writeHead(301, {
+          Location: "/"
+        });
+        response.end();
+      });
+    }
+  });
+});
+app.post('/process_update', function (request, response) {
+  var body = "";
+  request.on('data', function (data) {
+    body += data;
+  });
+  request.on('end', function () {
+    var postQuery = new URLSearchParams(decodeURIComponent(body));
+
+    if (postQuery.get('title') === '' || postQuery.get('content') === '') {
+      response.writeHead(301, {
+        Location: "/create?success=false"
+      });
+      response.end();
+    } else {
+      _fs.default.rename("page/document/".concat(postQuery.get("id")), "page/document/".concat(postQuery.get("title")), function (err) {
+        _fs.default.writeFile("page/document/".concat(postQuery.get('title')), (0, _sanitizeHtml.default)(postQuery.get('content')), 'utf8', function (err) {
+          response.writeHead(301, {
+            Location: "/"
+          });
+          response.end();
+        });
+      });
+    }
+  });
+});
 app.listen(port, function () {
   console.log("서버가 무사히 구동되었습니다.");
 });
